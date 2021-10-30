@@ -39,9 +39,7 @@ window.onload = () => {
 
 	setButtonEvent();
 
-	document.getElementById('init').onclick = e => {
-   	fetchJSON('model.php').then(data => { showResult(data); });
-	}
+	document.getElementById('init').onclick = e => { fetchJSON('model.php').then(data => { showResult(data); }); }
 
 	document.getElementById('create').onclick = e => {
 		mode = 'create';
