@@ -18,7 +18,7 @@ POST方式：name=Rose
 3. fetchJSON(ajax.js内)が、指定されたパラメーターをajax.phpに送る
 4. ajax.phpがこれらを受信して、レスポンスをechoで出力する例：{"result":0,"count":4}
 5. fetchJSON(ajax.js内)で、このecho結果を受信する
-6. returnしたものはindex-c.js内のfetchJSON(…).then(data => {…})のdataに入ります
+6. returnしたものはindex.js内のfetchJSON(…).then(data => {…})のdataに入ります
 7. thenの中の、showResult(index.js内)がデータの終着地点です
 
 phpMyAdminはこちらをどうぞ
