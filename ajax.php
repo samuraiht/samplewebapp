@@ -4,17 +4,29 @@ if(empty($_GET['mode'])) exit;
 
 require_once 'database.php';
 
-function echoHTML($msg) {
+function echoHTML($sql, $msg) {
+	global $link;
+
+# SQL実行
+	$response = execute($sql) ? $msg : $link->error;
+
+# 備考：controller.php + model.php + ajax.phpに同じ記載があります。
+# ----------------------------------------------------------------
 # flowerから花一覧を取得
 	$list = select('SELECT `id`,`name`,`count` FROM `flower`;');
 
-# <tr><td class="id">1</td><td class="name">Rose</td><td class="count">4</td><td><button data-id="1" class="edit">編集</button></td></tr>
+# <tr><td class="id">1</td><td class="name">Rose</td><td class="count">4</td><td><button data-id="1" data-name="Rose" data-count="4" class="update">編集</button></td><td><button data-id="1" class="delete warn">削除</button></td></tr>
 	$html = '';
-	foreach($list as $item) $html .= '<tr data-id="' . $item['id'] . '"><td class="id">' . $item['id'] . '</td><td class="name">' . $item['name'] . '</td><td class="count">' . $item['count'] . '</td><td><button data-id="' . $item['id'] . '" data-name="' . $item['name'] .  '" data-count="' . $item['count'] . '" class="update">編集</button></td><td><button data-id="' . $item['id'] . '" class="delete">削除</button></td></tr>';
+	foreach($list as $item) $html .= '<tr data-id="' . $item['id'] . '"><td class="id">' . $item['id'] . '</td><td class="name">' . $item['name'] . '</td><td class="count">' . $item['count'] . '</td><td><button data-id="' . $item['id'] . '" data-name="' . $item['name'] .  '" data-count="' . $item['count'] . '" class="update">編集</button></td><td><button data-id="' . $item['id'] . '" class="delete warn">削除</button></td></tr>';
+# ----------------------------------------------------------------
+
 	$json = [
-		'result' => $link->error ?? $msg,
+		'result' => $response,
 		'html' => $html
 	];
+
+# PHPの連想配列をjson_encodeすると、JavaScriptのオブジェクトにそのまま使える文字列になります。
+# {"result":"登録完了","html":'<tr>～</tr>'}
 	echo json_encode($json);
 }
 
@@ -39,6 +51,7 @@ switch($_GET['mode']) {
 		}
 		echo '{"result":1,"count":0}';# 存在しない花
 		break;
+
 	case 'create':
 		if(empty($_POST['name']) || (empty($_POST['count']) && $_POST['count'] !== '0')) {
 			echo '{"result":"品目と在庫を正しく入力してください。"}';
@@ -52,9 +65,9 @@ switch($_GET['mode']) {
 		}
 
 # INSERT
-		execute("INSERT INTO `flower` (`name`,`count`) VALUES('" . str_replace("'", "''", $_POST['name']) . "'," . (int)$_POST['count'] . ');');
-		echoHTML('登録完了');
+		echoHTML("INSERT INTO `flower` (`name`,`count`) VALUES('" . str_replace("'", "''", $_POST['name']) . "'," . (int)$_POST['count'] . ');', '登録完了');
 		break;
+
 	case 'update':
 		if((empty($_POST['id']) && $_POST['id'] !== '0') || empty($_POST['name']) || (empty($_POST['count']) && $_POST['count'] !== '0')) {
 			echo '{"result":"パラメーターが正しくありません。"}';
@@ -68,9 +81,9 @@ switch($_GET['mode']) {
 		}
 
 # UPDATE
-		execute("UPDATE `flower` SET `name`='" . str_replace("'", "''", $_POST['name']) . "',`count`=" . (int)$_POST['count'] . ' WHERE `id`=' . (int)$_POST['id'] . ';');
-		echoHTML('更新完了');
+		echoHTML("UPDATE `flower` SET `name`='" . str_replace("'", "''", $_POST['name']) . "',`count`=" . (int)$_POST['count'] . ' WHERE `id`=' . (int)$_POST['id'] . ';', '更新完了');
 		break;
+
 	case 'delete':
 		if(empty($_POST['id']) && $_POST['id'] !== '0') {
 			echo '{"result":"パラメーターが正しくありません。"}';
@@ -84,8 +97,9 @@ switch($_GET['mode']) {
 		}
 
 # DELETE
-		execute('DELETE FROM `flower` WHERE `id`=' . (int)$_POST['id'] . ';');
-		echoHTML('削除完了');
+		echoHTML('DELETE FROM `flower` WHERE `id`=' . (int)$_POST['id'] . ';', '削除完了');
 }
+
+# 切断
 $link->close();
 ?>
