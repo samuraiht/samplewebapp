@@ -30,6 +30,7 @@ foreach($tables as $table) {
 		}
 		$cols .= "{$keys})";
 	}
+# CREATE TABLE IF NOT EXISTS `flower` (`id` INT UNSIGNED AUTO_INCREMENT,`name` TINYTEXT,`count` INT NOT NULL DEFAULT 0,PRIMARY KEY(`id`));
 	execute("CREATE TABLE IF NOT EXISTS `{$table['name']}` ({$cols});");
 
 #データ登録
@@ -50,6 +51,8 @@ foreach($tables as $table) {
 		}
 		$vals .= $itemtext . ')';
 	}
+
+# INSERT INTO `flower` (`name`,`count`) VALUES ('Rose',4),('SunFlower',7),('Tulip',5);
 	execute("INSERT INTO `{$table['name']}` ({$keys}) VALUES {$vals};");
 }
 ?>
