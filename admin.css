@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-#init {
+.warn {
 	color: red;
 	font-weight: bold;
 }

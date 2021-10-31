@@ -10,7 +10,7 @@
 	<script src="admin.js"></script>
 </head>
 <body>
-	<button id="init">データベース初期化</button>
+	<button id="init" class="warn">データベース初期化</button>
 	<table>
 		<thead>
 			<th>商品番号</th>
