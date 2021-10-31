@@ -4,7 +4,8 @@ const HOST = 'localhost';# ホスト名
 const USER = 'root';# 接続ユーザー名
 const PASS = 'YourSecurePassword';# パスワード
 
-$link;//globalで使うmysqliオブジェクト
+# globalで使うmysqliオブジェクト
+$link;
 
 # $dbname = DatabaseName: 接続するデータベース名(省略可能)
 function connect($dbname = NULL) {
@@ -15,6 +16,7 @@ function connect($dbname = NULL) {
 	return $ok;
 }
 
+# SELECT文を実行して結果を取得
 function select($sql, $display = false) {
 	global $link;
 	$result = $link->query($sql);
@@ -25,6 +27,7 @@ function select($sql, $display = false) {
 	return $rows;
 }
 
+# SELECT文以外を実行するだけ
 function execute($sql, $display = false) {
 	global $link;
 	$link->query($sql);
