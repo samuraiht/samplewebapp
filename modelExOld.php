@@ -1,4 +1,5 @@
 <?php
+# モジュールの読み込み
 require_once 'database.php';
 
 # 接続 失敗時処理中断
