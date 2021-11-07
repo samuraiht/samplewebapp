@@ -1,11 +1,11 @@
 <?php
-#データベース作り直しするかどうか
+# データベース作り直しするかどうか
 $reset = true;
 
-#データベース名
+# データベース名
 $database = 'flower';
 
-#テーブルデータ
+# テーブルデータ
 $tables = [
 	[
 		'name' => 'sqllog',
@@ -59,13 +59,13 @@ $tables = [
 	]
 ];
 
-#処理の呼び出し
+# 処理の呼び出し
 require_once 'modelEx.php';
 
 # 管理画面の品目一覧のテーブルHTMLを生成
 include 'showData.php';
 
-#切断
+# 切断
 $link->close();
 
 $json = [
