@@ -13,13 +13,13 @@ index.jsの読み込み
 ・ユーザー側画面の処理とデータの流れ
 0. controller.php::options()で、データベースの花の名前`name`を全件取得して選択肢を作る
 1. index.php内の選択肢を選ぶvalueがついています(Roseを選んだとします)
-2. 検索ボタンを押すと、document.getElementById('search').onclickが実行される
-Request URL: ajax.php?mode=search with POST:name=Rose
+2. 検索ボタンを押すと、index.js::document.getElementById('search').onclickが実行される
+Request URL: ajax.php
 GET Query：	mode=search
 POST Query：name=Rose
 3. ajax.js::fetchJSONが、指定されたパラメーターをajax.phpに送る
-4. ajax.phpがこれらを受信して、レスポンスをechoで出力する例：{"result":0,"count":4}
-5. ajax.jsfetchJSONで、このecho結果を受信する
+4. ajax.phpがこれらを受信して、レスポンスをechoで出力する 例：{"result":0,"count":4}
+5. ajax.js::fetchJSONで、このecho結果を受信する
 6. returnしたものはindex.js::fetchJSON(…).then(data => {…})のdataに入ります
 7. thenの中の、index.js::showResultがデータの終着地点です
 8. ページ上に結果表示

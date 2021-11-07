@@ -10,20 +10,17 @@ function echoHTML($sql, $msg) {
 # SQL実行
 	$response = execute($sql) ? $msg : $link->error;
 
-# 備考：controller.php + model.php + ajax.phpに同じ記載があります。
-# ----------------------------------------------------------------
-# flowerから花一覧を取得
-	$list = select('SELECT `id`,`name`,`count` FROM `flower`;');
+# 実行したSQLの記録
+	execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
 
-# <tr><td class="id">1</td><td class="name">Rose</td><td class="count">4</td><td><button data-id="1" data-name="Rose" data-count="4" class="update">編集</button></td><td><button data-id="1" class="delete warn">削除</button></td></tr>
-	$html = '';
-	foreach($list as $item) $html .= '<tr data-id="' . $item['id'] . '"><td class="id">' . $item['id'] . '</td><td class="name">' . $item['name'] . '</td><td class="count">' . $item['count'] . '</td><td><button data-id="' . $item['id'] . '" data-name="' . $item['name'] .  '" data-count="' . $item['count'] . '" class="update">編集</button></td><td><button data-id="' . $item['id'] . '" class="delete warn">削除</button></td></tr>';
-# ----------------------------------------------------------------
+# 管理画面の品目一覧のテーブルHTMLを生成
+	include 'showData.php';
 
 	$json = [
 		'result' => $response,
 		'html' => $html
 	];
+
 
 # PHPの連想配列をjson_encodeすると、JavaScriptのオブジェクトにそのまま使える文字列になります。
 # {"result":"登録完了","html":'<tr>～</tr>'}
@@ -44,11 +41,16 @@ switch($_GET['mode']) {
 			break;
 		}
 
-		$zaiko = select("SELECT `count` FROM `flower` WHERE `name`='" . str_replace("'", "''", $_POST['name']) . "';");
-		if(count($zaiko)) {
-			echo '{"result":0,"count":' . $zaiko[0]['count'] . '}';
+		$sql = "SELECT `count` FROM `flower` WHERE `name`='" . str_replace("'", "''", $_POST['name']) . "';";
+		$zaiko = select($sql);
+		if(count($zaiko)) {# zaiko.length 0だとfalse扱いになる　1以上ならtrue扱い
+			echo '{"result":0,"count":' . $zaiko[0]['count'] . '}';# {"result":0,"count":4}
 			break;
 		}
+
+# 実行したSQLの記録
+		execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
+
 		echo '{"result":1,"count":0}';# 存在しない花
 		break;
 
@@ -64,8 +66,20 @@ switch($_GET['mode']) {
 			break;
 		}
 
+# すでにある品目かどうか確認
+		$sql = "SELECT `count` FROM `flower` WHERE `name`='" . str_replace("'", "''", $_POST['name']) . "';";
+		$result = select($sql);
+
+# 実行したSQLの記録
+		execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
+
+		if(count($result)) {# 1件存在
+# UPDATE
+			echoHTML("UPDATE `flower` SET `count`=" . ((int)$result[0]['count'] + (int)$_POST['count']) . " WHERE `name`='" . str_replace("'", "''", $_POST['name']) . "';", '在庫を追加しました');
+		} else {# 0件=存在しない
 # INSERT
-		echoHTML("INSERT INTO `flower` (`name`,`count`) VALUES('" . str_replace("'", "''", $_POST['name']) . "'," . (int)$_POST['count'] . ');', '登録完了');
+			echoHTML("INSERT INTO `flower` (`name`,`count`) VALUES('" . str_replace("'", "''", $_POST['name']) . "'," . (int)$_POST['count'] . ');', '登録完了');
+		}
 		break;
 
 	case 'update':

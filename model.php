@@ -8,6 +8,27 @@ $database = 'flower';
 #テーブルデータ
 $tables = [
 	[
+		'name' => 'sqllog',
+		'col' => [
+			[
+				'name' => 'id',
+				'type' => 'BIGINT',# -2147483648 ~ 2147483647の整数
+				'attr' => 'UNSIGNED AUTO_INCREMENT'# 符号なしなので、範囲が変わります(0 ~ 4294967295)
+			],
+			[
+				'name' => 'sql',
+				'type' => 'TEXT',# 65535バイト以下の文字列
+				'attr' => NULL
+			],
+			[
+				'name' => 'date',
+				'type' => 'TIMESTAMP',# -2147483648 ~ 2147483647の整数
+				'attr' => 'NOT NULL DEFAULT CURRENT_TIMESTAMP'
+			]
+		],
+		'pkey' => [0]# PRIMARY KEYにするカラムの番号
+	],
+	[
 		'name' => 'flower',
 		'col' => [
 			[
@@ -17,8 +38,8 @@ $tables = [
 			],
 			[
 				'name' => 'name',
-				'type' => 'TINYTEXT',# 255バイト以下の文字列
-				'attr' => NULL
+				'type' => 'VARCHAR(255)',# 255バイト以下の文字列
+				'attr' => 'NOT NULL UNIQUE'
 			],
 			[
 				'name' => 'count',
@@ -41,15 +62,8 @@ $tables = [
 #処理の呼び出し
 require_once 'modelEx.php';
 
-# 備考：controller.php + model.php + ajax.phpに同じ記載があります。
-# ----------------------------------------------------------------
-# flowerから花一覧を取得
-$list = select('SELECT `id`,`name`,`count` FROM `flower`;');
-
-# <tr><td class="id">1</td><td class="name">Rose</td><td class="count">4</td><td><button data-id="1" data-name="Rose" data-count="4" class="update">編集</button></td><td><button data-id="1" class="delete warn">削除</button></td></tr>
-	$html = '';
-	foreach($list as $item) $html .= '<tr data-id="' . $item['id'] . '"><td class="id">' . $item['id'] . '</td><td class="name">' . $item['name'] . '</td><td class="count">' . $item['count'] . '</td><td><button data-id="' . $item['id'] . '" data-name="' . $item['name'] .  '" data-count="' . $item['count'] . '" class="update">編集</button></td><td><button data-id="' . $item['id'] . '" class="delete warn">削除</button></td></tr>';
-# ----------------------------------------------------------------
+# 管理画面の品目一覧のテーブルHTMLを生成
+include 'showData.php';
 
 #切断
 $link->close();

@@ -21,7 +21,7 @@
 		</thead>
 		<tbody id="data"><?php flowerlist(); ?></tbody>
 	</table>
-	<button id="create">新規登録</button>
+	<button id="create">登録・入荷</button>
 	<form>
 		<input type="hidden" id="id">
 		<div><label for="name">品目</label><input type="text" id="name"></div>
