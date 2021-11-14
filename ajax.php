@@ -4,14 +4,22 @@ if(empty($_GET['mode'])) exit;
 
 require_once 'database.php';
 
-function echoHTML($sql, $msg) {
+# $_POSTの数値チェック
+function checkValue($val) {//空＆0じゃない＝空　0じゃないけどキャストすると0になる
+	return (empty($val) || $val == 0) && $val !== '0';
+}
+
+function echoHTML($msg, $sql = NULL) {
 	global $link;
 
+	$response = $msg;
+	if(!empty($sql)) {
 # SQL実行
-	$response = execute($sql) ? $msg : $link->error;
+		if(!execute($sql)) $response = $link->error;
 
 # 実行したSQLの記録
-	execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
+		execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
+	}
 
 # 管理画面の品目一覧のテーブルHTMLを生成
 	include 'showData.php';
@@ -21,7 +29,6 @@ function echoHTML($sql, $msg) {
 		'html' => $html
 	];
 
-
 # PHPの連想配列をjson_encodeすると、JavaScriptのオブジェクトにそのまま使える文字列になります。
 # {"result":"登録完了","html":'<tr>～</tr>'}
 	echo json_encode($json);
@@ -29,22 +36,23 @@ function echoHTML($sql, $msg) {
 
 switch($_GET['mode']) {
 	case 'search':
-# $_POST['name']が空の場合、エラーのレスポンスを返して、処理中断
-		if(empty($_POST['name'])) {
-			echo '{"result":2,"count":0}';
-			break;
-		}
-
 # 接続 失敗時処理中断
 		if(!connect('flower')) {
 			echo '{"result":3,"count":0}';
 			break;
 		}
 
-		$sql = "SELECT `count` FROM `flower` WHERE `name`='" . str_replace("'", "''", $_POST['name']) . "';";
-		$zaiko = select($sql);
-		if(count($zaiko)) {# zaiko.length 0だとfalse扱いになる　1以上ならtrue扱い
-			echo '{"result":0,"count":' . $zaiko[0]['count'] . '}';# {"result":0,"count":4}
+# $_POST['name']が空の場合、エラーのレスポンスを返して、処理中断
+		if(empty($_POST['name'])) {
+			echo '{"result":2,"count":0}';
+			break;
+		}
+
+		$sql = "SELECT `count`,`price`,`point` FROM `flower` WHERE `name`='" . str_replace("'", "''", $_POST['name']) . "';";
+		$item = select($sql);
+		if(count($item)) {# item.length 0だとfalse扱いになる　1以上ならtrue扱い
+# {"result":0,"count":4,"price":400,"point":0}
+			echo '{"result":0,"count":' . $item[0]['count'] . ',"price":' . $item[0]['price'] . ',"point":' . $item[0]['point'] . '}';
 			break;
 		}
 
@@ -55,14 +63,15 @@ switch($_GET['mode']) {
 		break;
 
 	case 'create':
-		if(empty($_POST['name']) || (empty($_POST['count']) && $_POST['count'] !== '0')) {
-			echo '{"result":"品目と在庫を正しく入力してください。"}';
+# 接続 失敗時処理中断
+		if(!connect('flower')) {
+			echoHTML($link->connect_error);
 			break;
 		}
 
-# 接続 失敗時処理中断
-		if(!connect('flower')) {
-			echo '{"result":"' . $link->connect_error . '"}';
+# パラメーターチェック
+		if(empty($_POST['name']) || checkValue($_POST['count']) || checkValue($_POST['price']) || checkValue($_POST['point'])) {
+			echoHTML('パラメーターが正しくありません。');
 			break;
 		}
 
@@ -75,43 +84,45 @@ switch($_GET['mode']) {
 
 		if(count($result)) {# 1件存在
 # UPDATE
-			echoHTML("UPDATE `flower` SET `count`=" . ((int)$result[0]['count'] + (int)$_POST['count']) . " WHERE `name`='" . str_replace("'", "''", $_POST['name']) . "';", '在庫を追加しました');
+			echoHTML('在庫を追加しました', "UPDATE `flower` SET `count`=" . ((int)$result[0]['count'] + (int)$_POST['count']) . ",`price`=" . (int)$_POST['price'] . ",`point`=" . (int)$_POST['point'] . " WHERE `name`='" . str_replace("'", "''", $_POST['name']) . "';");
 		} else {# 0件=存在しない
 # INSERT
-			echoHTML("INSERT INTO `flower` (`name`,`count`) VALUES('" . str_replace("'", "''", $_POST['name']) . "'," . (int)$_POST['count'] . ');', '登録完了');
+			echoHTML('登録完了', "INSERT INTO `flower` (`name`,`count`,`price`,`point`) VALUES('" . str_replace("'", "''", $_POST['name']) . "'," . (int)$_POST['count'] . ',' . (int)$_POST['price'] . ',' . (int)$_POST['point'] . ');');
 		}
 		break;
 
 	case 'update':
-		if((empty($_POST['id']) && $_POST['id'] !== '0') || empty($_POST['name']) || (empty($_POST['count']) && $_POST['count'] !== '0')) {
-			echo '{"result":"パラメーターが正しくありません。"}';
+# 接続 失敗時処理中断
+		if(!connect('flower')) {
+			echoHTML($link->connect_error);
 			break;
 		}
 
-# 接続 失敗時処理中断
-		if(!connect('flower')) {
-			echo '{"result":"' . $link->connect_error . '"}';
+# パラメーターチェック
+		if(checkValue($_POST['id']) || empty($_POST['name']) || checkValue($_POST['count']) || checkValue($_POST['price']) || checkValue($_POST['point'])) {
+			echoHTML('パラメーターが正しくありません。');
 			break;
 		}
 
 # UPDATE
-		echoHTML("UPDATE `flower` SET `name`='" . str_replace("'", "''", $_POST['name']) . "',`count`=" . (int)$_POST['count'] . ' WHERE `id`=' . (int)$_POST['id'] . ';', '更新完了');
+		echoHTML('更新完了', "UPDATE `flower` SET `name`='" . str_replace("'", "''", $_POST['name']) . "',`count`=" . (int)$_POST['count'] . ',`price`=' . (int)$_POST['price'] . ',`point`=' . (int)$_POST['point'] . ' WHERE `id`=' . (int)$_POST['id'] . ';');
 		break;
 
 	case 'delete':
-		if(empty($_POST['id']) && $_POST['id'] !== '0') {
-			echo '{"result":"パラメーターが正しくありません。"}';
+# 接続 失敗時処理中断
+		if(!connect('flower')) {
+			echoHTML($link->connect_error);
 			break;
 		}
 
-# 接続 失敗時処理中断
-		if(!connect('flower')) {
-			echo '{"result":"' . $link->connect_error . '"}';
+# パラメーターチェック
+		if(checkValue($_POST['id'])) {
+			echoHTML('パラメーターが正しくありません。');
 			break;
 		}
 
 # DELETE
-		echoHTML('DELETE FROM `flower` WHERE `id`=' . (int)$_POST['id'] . ';', '削除完了');
+		echoHTML('削除完了', 'DELETE FROM `flower` WHERE `id`=' . (int)$_POST['id'] . ';');
 }
 
 # 切断

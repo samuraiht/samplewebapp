@@ -15,6 +15,20 @@ window.onload = () => {
 	}
 
 	function setButtonEvent() {
+		const tds = document.getElementsByTagName('td');
+		for(let i in tds) {
+			tds[i].ondblclick = e => {
+				const me = e.currentTarget;// 今ダブルクリックしたセル
+				if(me.getAttribute('contentEditable') == null) me.setAttribute('contentEditable', '');
+				me.focus();
+			}
+			tds[i].onblur = e => {
+				const me = e.currentTarget;// 今フォーカスが外れたセル
+				me.attributes.removeNamedItem('contentEditable');
+// こんな感じ
+//		    	fetchJSON('ajax.php', 'mode=update', 'id=' + document.getElementById('id').value + '&name=' + document.getElementById('name').value + '&count=' + document.getElementById('count').value + '&price=' + document.getElementById('price').value + '&point=' + document.getElementById('point').value).then(data => { showResult(data); });
+			}
+		}
 		const buttonUpdate = document.getElementsByClassName('update');
 		for(let i in buttonUpdate) {
 			buttonUpdate[i].onclick = e => {
@@ -25,6 +39,8 @@ window.onload = () => {
 				document.getElementById('id').value = me.getAttribute('data-id');// 隠し項目
 				document.getElementById('name').value = me.getAttribute('data-name');// 品目
 				document.getElementById('count').value = me.getAttribute('data-count');// 在庫
+				document.getElementById('price').value = me.getAttribute('data-price');// 価格
+				document.getElementById('point').value = me.getAttribute('data-point');// ポイント
 			};
 		}
 
@@ -57,10 +73,10 @@ window.onload = () => {
 	document.getElementById('buttonExe').onclick = e => {
     switch(mode) {
     	case 'create':// 新規
-	    	fetchJSON('ajax.php', 'mode=create', 'name=' + document.getElementById('name').value + '&count=' + document.getElementById('count').value).then(data => { showResult(data); });
+	    	fetchJSON('ajax.php', 'mode=create', 'name=' + document.getElementById('name').value + '&count=' + document.getElementById('count').value + '&price=' + document.getElementById('price').value + '&point=' + document.getElementById('point').value).then(data => { showResult(data); });
     		break;
     	case 'update':// 更新
-	    	fetchJSON('ajax.php', 'mode=update', 'id=' + document.getElementById('id').value + '&name=' + document.getElementById('name').value + '&count=' + document.getElementById('count').value).then(data => { showResult(data); });
+	    	fetchJSON('ajax.php', 'mode=update', 'id=' + document.getElementById('id').value + '&name=' + document.getElementById('name').value + '&count=' + document.getElementById('count').value + '&price=' + document.getElementById('price').value + '&point=' + document.getElementById('point').value).then(data => { showResult(data); });
     }
 	};
 };

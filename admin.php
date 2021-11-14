@@ -16,6 +16,8 @@
 			<th>商品番号</th>
 			<th>名称</th>
 			<th>在庫</th>
+			<th>価格</th>
+			<th>ポイント</th>
 			<th>編集</th>
 			<th>削除</th>
 		</thead>
@@ -26,6 +28,8 @@
 		<input type="hidden" id="id">
 		<div><label for="name">品目</label><input type="text" id="name"></div>
 		<div><label for="count">在庫</label><input type="number" id="count" value="0"></div>
+		<div><label for="price">価格</label><input type="number" id="price" value="0"></div>
+		<div><label for="point">ポイント</label><input type="number" id="point" value="0"></div>
 	</form>
 	<button id="buttonExe">登録</button>
 	<div id="result"></div>
