@@ -28,11 +28,15 @@ POST Query：name=Rose
 
 git clone git@github.com:samuraiht/samplewebapp
 
+cd samplewebapp
+
 git remote remove origin
 
 phpMyAdminはこちらをどうぞ
 1端末に1つあれば十分ですのでプロジェクトごとに設置して容量オーバーにならないように注意です。
 
 git clone git@github.com:samuraiht/phpMyAdmin
+
+cd phpMyAdmin
 
 git remote remove origin
