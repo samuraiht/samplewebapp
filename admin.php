@@ -13,13 +13,15 @@
 	<button id="init" class="warn">データベース初期化</button>
 	<table>
 		<thead>
-			<th>商品番号</th>
-			<th>名称</th>
-			<th>在庫</th>
-			<th>価格</th>
-			<th>ポイント</th>
-			<th>編集</th>
-			<th>削除</th>
+			<tr>
+				<th>商品番号</th>
+				<th>名称</th>
+				<th>在庫</th>
+				<th>価格</th>
+				<th>ポイント</th>
+				<th>編集</th>
+				<th>削除</th>
+			</tr>
 		</thead>
 		<tbody id="data"><?php flowerlist(); ?></tbody>
 	</table>

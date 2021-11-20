@@ -11,18 +11,21 @@ $log = [];
 
 # データベース作成
 if($reset) {
+# DROP DATABASE `flower`;
 	$sql = "DROP DATABASE `{$database}`;";
 	$log[] = $sql;
 	execute($sql);
 }
+# CREATE DATABASE IF NOT EXISTS `flower` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 $sql = "CREATE DATABASE IF NOT EXISTS `{$database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;";
 $log[] = $sql;
 execute($sql);
 
 # データベース選択
+# USE `flower`;
 $sql = "USE `{$database}`;";
 $log[] = $sql;
-execute($sql);# USE `flower`;
+execute($sql);
 
 foreach($tables as $table) {
 # テーブル作成
@@ -76,5 +79,5 @@ foreach($log as $s) {
 	if($sql) $sql .= ',';
 	$sql .= "('" . str_replace("'", "''", $s) . "')";
 }
-execute('INSERT INTO `sqllog` (`sql`) VALUES' . $sql . ';');
+execute("INSERT INTO `sqllog` (`sql`) VALUES{$sql};");
 ?>

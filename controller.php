@@ -10,13 +10,12 @@ function options() {
 # flowerから花一覧を取得
 	$list = select('SELECT `name` FROM `flower`;');
 
-# <option value="Rose">Rose</option>
-	$html = '';
-	foreach($list as $item) $html .= '<option value="' . $item['name'] . '">' . $item['name'] . '</option>';
-
 # 切断
 	$link->close();
 
+# <option value="Rose">Rose</option><option value="SunFlower">SunFlower</option><option value="Tulip">Tulip</option>
+	$html = '';
+	foreach($list as $item) $html .= '<option value="' . $item['name'] . '">' . $item['name'] . '</option>';
 	echo $html;
 }
 
