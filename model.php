@@ -55,6 +55,11 @@ $tables = [
 				'name' => 'point',
 				'type' => 'INT',# -2147483648 ~ 2147483647の整数
 				'attr' => 'UNSIGNED NOT NULL DEFAULT 0'# 符号なしなので、範囲が変わります(0 ~ 4294967295)
+			],
+			[
+				'name' => 'shipping',
+				'type' => 'INT',# -2147483648 ~ 2147483647の整数
+				'attr' => 'UNSIGNED NOT NULL DEFAULT 0'# 符号なしなので、範囲が変わります(0 ~ 4294967295)
 			]
 		],
 		'pkey' => [0],# PRIMARY KEYにするカラムの番号
@@ -62,8 +67,8 @@ $tables = [
 			'cols' => [1, 2, 3],
 			'values' => [
 				['Rose', 4, 400],
-				['SunFlower', 7, 1000],
-				['Tulip', 5, 500]
+				['SunFlower', 7, 300],
+				['Tulip', 5, 200]
 			]
 		]
 	]

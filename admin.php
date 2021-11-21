@@ -19,19 +19,21 @@
 				<th>在庫</th>
 				<th>価格</th>
 				<th>ポイント</th>
+				<th>送料</th>
 				<th>編集</th>
 				<th>削除</th>
 			</tr>
 		</thead>
 		<tbody id="data"><?php flowerlist(); ?></tbody>
 	</table>
-	<button id="create">登録・入荷</button>
+	<button id="store">登録・入荷</button>
 	<form>
 		<input type="hidden" id="id">
 		<div><label for="name">品目</label><input type="text" id="name"></div>
 		<div><label for="count">在庫</label><input type="number" id="count" value="0"></div>
 		<div><label for="price">価格</label><input type="number" id="price" value="0"></div>
 		<div><label for="point">ポイント</label><input type="number" id="point" value="0"></div>
+		<div><label for="shipping">送料</label><input type="number" id="shipping" value="0"></div>
 	</form>
 	<button id="buttonExe">登録</button>
 	<div id="result"></div>
