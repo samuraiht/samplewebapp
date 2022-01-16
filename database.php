@@ -16,6 +16,12 @@ function connect($dbname = NULL) {
 	return $ok;
 }
 
+# 切断
+function disconnect() {
+	global $link;
+	$link->close();
+}
+
 # SELECT文を実行して結果を取得
 function select($sql, $display = false) {
 	global $link;

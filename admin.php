@@ -6,7 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>花の一覧</title>
 	<link rel="stylesheet" href="admin.css">
-	<script src="ajax.js"></script>
+	<script src="fetch.js"></script>
 	<script src="admin.js"></script>
 </head>
 <body>

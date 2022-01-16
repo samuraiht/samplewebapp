@@ -30,7 +30,7 @@ window.onload = () => {
 			tds[i].onblur = e => {
 				const me = e.currentTarget;// 今フォーカスが外れたセル
 				me.attributes.removeNamedItem('contentEditable');
-				if(me.textContent != oldValue) fetchJSON('ajax.php', 'mode=celledit', 'id=' + me.parentElement.getAttribute('data-id') + '&col=' + me.getAttribute('data-col') + '&val=' + me.textContent).then(data => { showResult(data); });
+				if(me.textContent != oldValue) fetchJSON('app.php', 'mode=celledit', 'id=' + me.parentElement.getAttribute('data-id') + '&col=' + me.getAttribute('data-col') + '&val=' + me.textContent).then(data => { showResult(data); });
 			};
 		}
 		const buttonUpdate = document.getElementsByClassName('update');
@@ -57,7 +57,7 @@ window.onload = () => {
 				document.getElementById('result').textContent = '';
 				if(confirm('本当に削除しますか？')) {
 					const dataId = e.currentTarget.getAttribute('data-id');
-					fetchJSON('ajax.php', 'mode=delete', 'id=' + dataId).then(data => { showResult(data); });
+					fetchJSON('app.php', 'mode=delete', 'id=' + dataId).then(data => { showResult(data); });
 				}
 				init();
 			};
@@ -84,10 +84,10 @@ window.onload = () => {
 	document.getElementById('buttonExe').onclick = e => {
 		switch(mode) {
 			case 'store':// 新規
-				fetchJSON('ajax.php', 'mode=store', 'name=' + document.getElementById('name').value + '&count=' + document.getElementById('count').value + '&price=' + document.getElementById('price').value + '&point=' + document.getElementById('point').value + "&shipping=" + document.getElementById('shipping').value).then(data => { showResult(data); });
+				fetchJSON('app.php', 'mode=store', 'name=' + document.getElementById('name').value + '&count=' + document.getElementById('count').value + '&price=' + document.getElementById('price').value + '&point=' + document.getElementById('point').value + "&shipping=" + document.getElementById('shipping').value).then(data => { showResult(data); });
 				break;
 			case 'update':// 更新
-				fetchJSON('ajax.php', 'mode=update', 'id=' + document.getElementById('id').value + '&name=' + document.getElementById('name').value + '&count=' + document.getElementById('count').value + '&price=' + document.getElementById('price').value + '&point=' + document.getElementById('point').value + "&shipping=" + document.getElementById('shipping').value).then(data => { showResult(data); });
+				fetchJSON('app.php', 'mode=update', 'id=' + document.getElementById('id').value + '&name=' + document.getElementById('name').value + '&count=' + document.getElementById('count').value + '&price=' + document.getElementById('price').value + '&point=' + document.getElementById('point').value + "&shipping=" + document.getElementById('shipping').value).then(data => { showResult(data); });
 		}
 	};
 };

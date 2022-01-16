@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>SampleWebApp</title>
-	<script src="ajax.js"></script>
+	<script src="fetch.js"></script>
 	<script src="index.js"></script>
 </head>
 <body>

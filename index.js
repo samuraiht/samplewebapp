@@ -20,6 +20,6 @@ window.onload = () => {
 // 呼び出し---------------------------------------------------
   document.getElementById('search').onclick = e => {
     e.preventDefault();
-    fetchJSON('ajax.php', 'mode=index', 'name=' + document.getElementById('item').value).then(data => { showResult(data); });
+    fetchJSON('app.php', 'mode=index', 'name=' + document.getElementById('item').value).then(data => { showResult(data); });
   };
 };

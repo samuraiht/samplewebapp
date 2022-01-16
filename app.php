@@ -9,6 +9,12 @@ function checkValue($val) {//空＆0じゃない＝空　0じゃないけどキ�
 	return (empty($val) || $val == 0) && $val !== '0';
 }
 
+function sqllog($sql) {
+	global $link;
+	execute('USE `debug`;');
+	execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
+}
+
 function echoHTML($msg, $sql = NULL) {
 	global $link;
 
@@ -18,11 +24,11 @@ function echoHTML($msg, $sql = NULL) {
 		if(!execute($sql)) $response = $link->error;
 
 # 実行したSQLの記録
-		execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
+		sqllog($sql);
 	}
 
 # 管理画面の品目一覧のテーブルHTMLを生成
-	include 'showData.php';
+	include 'showDataEx.php';
 
 	$json = [
 		'result' => $response,
@@ -50,14 +56,15 @@ switch($_GET['mode']) {
 
 		$sql = "SELECT `count`,`price`,`point`,`shipping` FROM `flower` WHERE `name`='" . str_replace("'", "''", $_POST['name']) . "';";
 		$item = select($sql);
+
+# 実行したSQLの記録
+		sqllog($sql);
+
 		if(count($item)) {# item.length 0だとfalse扱いになる　1以上ならtrue扱い
 # {"result":0,"count":4,"price":400,"point":0}
 			echo '{"result":0,"count":' . $item[0]['count'] . ',"price":' . $item[0]['price'] . ',"point":' . $item[0]['point'] . ',"shipping":' . $item[0]['shipping'] . '}';
 			break;
 		}
-
-# 実行したSQLの記録
-		execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
 
 		echo '{"result":1,"count":0}';# 存在しない花
 		break;
@@ -80,7 +87,7 @@ switch($_GET['mode']) {
 		$result = select($sql);
 
 # 実行したSQLの記録
-		execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
+		sqllog($sql);
 
 		if(count($result)) {# 1件存在
 # UPDATE
@@ -145,5 +152,5 @@ switch($_GET['mode']) {
 }
 
 # 切断
-$link->close();
+disconnect();
 ?>
