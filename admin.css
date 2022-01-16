@@ -1,10 +1,8 @@
 @charset "UTF-8";
-
 .warn {
 	color: red;
 	font-weight: bold;
 }
-
 .number {
 	text-align: right;
 }
