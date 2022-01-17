@@ -83,6 +83,5 @@ foreach($log as $s) {
 	if($sql) $sql .= ',';
 	$sql .= "('" . str_replace("'", "''", $s) . "')";
 }
-execute('USE `debug`;');
-execute("INSERT INTO `sqllog` (`sql`) VALUES{$sql};");
+execute("INSERT INTO `debug`.`sqllog` (`sql`) VALUES{$sql};");
 ?>

@@ -1,10 +1,8 @@
 <?php
 # 実行したSQLの記録
-execute('USE `debug`;');
-execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
+execute("INSERT INTO `debug`.`sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
 
 # flowerから花一覧を取得
-execute('USE `flower`;');
 $sql = 'SELECT `id`,`name`,`count`,`price`,`point`,`shipping` FROM `flower`;';
 $list = select($sql);
 

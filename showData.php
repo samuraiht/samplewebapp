@@ -1,6 +1,6 @@
 <?php
 require_once 'database.php';
-connect();
+connect('flower');
 require_once 'showDataEx.php';
 disconnect();
 ?>

@@ -1,4 +1,4 @@
-<?php require_once 'controller.php'; ?><!DOCTYPE html>
+<?php include 'showData.php'; ?><!DOCTYPE html>
 <html lang="ja">
 <head>
 	<meta charset="UTF-8">
@@ -7,7 +7,7 @@
 	<title>花の一覧</title>
 	<link rel="stylesheet" href="admin.css">
 	<script src="fetch.js"></script>
-	<script src="admin.js"></script>
+	<script src="flower.js"></script>
 </head>
 <body>
 	<button id="init" class="warn">データベース初期化</button>
@@ -24,7 +24,7 @@
 				<th>削除</th>
 			</tr>
 		</thead>
-		<tbody id="data"><?php flowerlist(); ?></tbody>
+		<tbody id="data"><?php echo $html; ?></tbody>
 	</table>
 	<button id="store">登録・入荷</button>
 	<form>

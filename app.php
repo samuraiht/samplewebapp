@@ -11,8 +11,7 @@ function checkValue($val) {//空＆0じゃない＝空　0じゃないけどキ�
 
 function sqllog($sql) {
 	global $link;
-	execute('USE `debug`;');
-	execute("INSERT INTO `sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
+	execute("INSERT INTO `debug`.`sqllog` (`sql`) VALUES('" . str_replace("'", "''", $sql) . "');");
 }
 
 function echoHTML($msg, $sql = NULL) {
@@ -41,7 +40,7 @@ function echoHTML($msg, $sql = NULL) {
 }
 
 switch($_GET['mode']) {
-	case 'index':# index.phpの検索処理
+	case 'index':# flower.phpの検索処理
 # 接続 失敗時処理中断
 		if(!connect('flower')) {
 			echo '{"result":3,"count":0}';
@@ -69,7 +68,7 @@ switch($_GET['mode']) {
 		echo '{"result":1,"count":0}';# 存在しない花
 		break;
 
-	case 'store':# admin.php->新規登録
+	case 'store':# flower.php->新規登録
 # 接続 失敗時処理中断
 		if(!connect('flower')) {
 			echoHTML($link->connect_error);
@@ -98,7 +97,7 @@ switch($_GET['mode']) {
 		}
 		break;
 
-	case 'update':# admin.php->更新
+	case 'update':# flower.php->更新
 # 接続 失敗時処理中断
 		if(!connect('flower')) {
 			echoHTML($link->connect_error);
@@ -115,7 +114,7 @@ switch($_GET['mode']) {
 		echoHTML('更新完了', "UPDATE `flower` SET `name`='" . str_replace("'", "''", $_POST['name']) . "',`count`=" . (int)$_POST['count'] . ',`price`=' . (int)$_POST['price'] . ',`point`=' . (int)$_POST['point'] . ",`shipping`=" . (int)$_POST['shipping'] . ' WHERE `id`=' . (int)$_POST['id'] . ';');
 		break;
 
-	case 'celledit':# admin.php->セル編集
+	case 'celledit':# flower.php->セル編集
 # 接続 失敗時処理中断
 		if(!connect('flower')) {
 			echoHTML($link->connect_error);
