@@ -2,7 +2,7 @@ window.onload = () => {
 	let mode = 'store', oldValue;
 
 	function showResult(data) {
-		document.getElementById('result').textContent = data.result;// 今回はメッセージが来る
+		document.getElementById('result').textContent = data.result;// メッセージ
 		document.getElementById('data').innerHTML = data.html;// HTMLのtable要素の内容
 		setButtonEvent();
 	}

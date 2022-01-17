@@ -111,6 +111,7 @@ $data = [
 require_once 'modelEx.php';
 
 # 管理画面の品目一覧のテーブルHTMLを生成
+execute('USE `flower`;');
 include 'showDataEx.php';
 
 # 切断
