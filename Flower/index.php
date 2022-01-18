@@ -1,16 +1,18 @@
-<?php include 'showData.php'; ?><!DOCTYPE html>
+<?php require_once 'Controller.php'; ?><!DOCTYPE html>
 <html lang="ja">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>花の一覧</title>
-	<link rel="stylesheet" href="admin.css">
-	<script src="fetch.js"></script>
+	<link rel="stylesheet" href="../app/css/reset.css">
+	<link rel="stylesheet" href="flower.css">
+	<script src="../app/js/fetch.js"></script>
 	<script src="flower.js"></script>
 </head>
 <body>
-	<button id="init" class="warn">データベース初期化</button>
+	<h1>SimpleMVC database admin demo</h1>
+	<nav><a href="../">トップページ</a></nav>
 	<table>
 		<thead>
 			<tr>

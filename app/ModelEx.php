@@ -1,5 +1,5 @@
 <?php
-require_once 'database.php';
+require_once 'db.php';
 
 # 接続 失敗時処理中断
 if(!connect()) {
@@ -7,28 +7,18 @@ if(!connect()) {
 	exit;
 }
 
-$log = [];
-
 foreach($data as $db) {
 # データベースリセット
-	if($reset) {
-# DROP DATABASE `flower`;
-		$sql = "DROP DATABASE `{$db['name']}`;";
-		$log[] = $sql;
-		execute($sql);
-	}
+# DROP DATABASE `debug`;
+	if($reset) execute("DROP DATABASE `{$db['name']}`;");
 
 # データベース作成
 # CREATE DATABASE IF NOT EXISTS `flower` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
-	$sql = "CREATE DATABASE IF NOT EXISTS `{$db['name']}` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;";
-	$log[] = $sql;
-	execute($sql);
+	execute("CREATE DATABASE IF NOT EXISTS `{$db['name']}` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;");
 
 # データベース選択
 # USE `flower`;
-	$sql = "USE `{$db['name']}`;";
-	$log[] = $sql;
-	execute($sql);
+	execute("USE `{$db['name']}`;");
 
 # テーブル作成
 	foreach($db['tables'] as $table) {
@@ -49,9 +39,7 @@ foreach($data as $db) {
 
 # CREATE TABLE IF NOT EXISTS `flower` (`id` INT UNSIGNED AUTO_INCREMENT,`name` VARCHAR(255) NOT NULL UNIQUE,`count` INT NOT NULL DEFAULT 0,PRIMARY KEY(`id`));
 # CREATE TABLE IF NOT EXISTS `sqllog` (`id` BIGINT UNSIGNED AUTO_INCREMENT,`sql` TEXT ,`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY(`id`));
-		$sql = "CREATE TABLE IF NOT EXISTS `{$table['name']}` ({$cols});";
-		$log[] = $sql;
-		execute($sql);
+		execute("CREATE TABLE IF NOT EXISTS `{$table['name']}` ({$cols});");
 
 # データ登録
 		if(empty($table['data'])) continue;//$table['data']のキーがなければ次に行く
@@ -73,15 +61,10 @@ foreach($data as $db) {
 		}
 
 # INSERT INTO `flower` (`name`,`count`) VALUES ('Rose',4),('SunFlower',7),('Tulip',5);
-		$sql = "INSERT INTO `{$table['name']}` ({$keys}) VALUES {$vals};";
-		$log[] = $sql;
-		execute($sql);
+		execute("INSERT INTO `{$table['name']}` ({$keys}) VALUES {$vals};");
 	}
 }
-$sql = '';
-foreach($log as $s) {
-	if($sql) $sql .= ',';
-	$sql .= "('" . str_replace("'", "''", $s) . "')";
-}
-execute("INSERT INTO `debug`.`sqllog` (`sql`) VALUES{$sql};");
+
+disconnect();# 切断
+echo json_encode(['result' => 'データベース初期化完了']);# レスポンス
 ?>
