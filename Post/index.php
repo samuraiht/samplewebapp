@@ -17,11 +17,7 @@
 			<li><a href="../">トップページ</a></li>
 			<li><a href="admin.php">管理画面</a></li>
 		</ul>
-		<ul id="index">
-			<li><a href="app.php?mode=index&id=1">
-				<h2>title</h2>
-				<div><img class="icon" src="img/corridor.jpg" alt="大学の廊下"></div>
-			</a></li>
+		<ul id="posts"><?php echo $html; ?></li>
 		</ul>
 	</nav>
 </body>
