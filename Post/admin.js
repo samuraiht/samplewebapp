@@ -7,11 +7,9 @@ window.onload = () => {
 				btnExe = document.getElementById('buttonExe'),
 				inputs = [
 					{ data : 'data-id', elem : document.getElementById('id'), initValue : '' },
-					{ data : 'data-name', elem : document.getElementById('name'), initValue : '' },
-					{ data : 'data-count', elem : document.getElementById('count'), initValue : '0' },
-					{ data : 'data-price', elem : document.getElementById('price'), initValue : '0' },
-					{ data : 'data-point', elem : document.getElementById('point'), initValue : '0' },
-					{ data : 'data-shipping', elem : document.getElementById('shipping'), initValue : '0' }
+					{ data : 'data-title', elem : document.getElementById('title'), initValue : '' },
+					{ data : 'data-content', elem : document.getElementById('content'), initValue : '0' },
+					{ data : 'data-icon', elem : document.getElementById('icon'), initValue : '0' }
 				];
 	let mode = 'store', oldValue;
 

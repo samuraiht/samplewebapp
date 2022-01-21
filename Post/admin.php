@@ -25,7 +25,7 @@
 		</thead>
 		<tbody id="data"><?php echo $data; ?></tbody>
 	</table>
-	<button id="store">登録・入荷</button>
+	<button id="store">投稿</button>
 	<form>
 		<input type="hidden" id="id">
 		<div><label for="title">タイトル</label><input type="text" id="title"></div>
