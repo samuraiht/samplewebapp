@@ -9,13 +9,13 @@ function object2query(obj) {
   return q;
 }
 
-async function fetchJSON(requestURL, getQuery = {}, postQuery = {}) {
+async function fetchJSON(requestURL, getQuery = {}, postQuery = {}, $isFileMode = false) {
   const useGet = Object.keys(getQuery).length, usePost = Object.keys(postQuery).length;
 
 // リクエストデータ
   const data = {
     method: usePost ? 'POST' : 'GET',
-    headers: {'Content-Type': usePost ? 'application/x-www-form-urlencoded' : 'text/plain'},
+    headers: {'Content-Type': $isFileMode ? 'multipart/form-data' : usePost ? 'application/x-www-form-urlencoded' : 'text/plain'},
     mode: 'cors',
     cache: 'no-cache',
     credentials: 'same-origin',

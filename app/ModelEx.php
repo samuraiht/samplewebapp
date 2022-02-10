@@ -7,7 +7,7 @@ if(!connect()) {
 	exit;
 }
 
-foreach($data as $db) {
+foreach($data['databases'] as $db) {
 # データベースリセット
 # DROP DATABASE `debug`;
 	if($reset) execute("DROP DATABASE `{$db['name']}`;");
@@ -31,6 +31,15 @@ foreach($data as $db) {
 			$cols .= ',PRIMARY KEY(';
 			$keys = '';
 			foreach($table['pkey'] as $key) {
+				if($keys != '') $keys .= ',';
+				$keys .= "`{$table['columns'][$key]['name']}`";
+			}
+			$cols .= "{$keys})";
+		}
+		if(!empty($table['unique']) && count($table['unique'])){
+			$cols .= ',UNIQUE(';
+			$keys = '';
+			foreach($table['unique'] as $key) {
 				if($keys != '') $keys .= ',';
 				$keys .= "`{$table['columns'][$key]['name']}`";
 			}
@@ -65,6 +74,13 @@ foreach($data as $db) {
 	}
 }
 
+# 外部キー制約
+# ALTER TABLE `posts` ADD CONSTRAINT `icon01` FOREIGN KEY (`icon`) REFERENCES `images`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+if(!empty($data['relations'])) foreach($data['relations'] as $relation) execute("ALTER TABLE `{$relation['relation']['table']}` ADD CONSTRAINT `{$relation['name']}` FOREIGN KEY (`{$relation['relation']['column']}`) REFERENCES `{$relation['master']['database']}`.`{$relation['master']['table']}`(`{$relation['master']['column']}`) ON DELETE {$relation['delete']} ON UPDATE {$relation['update']};");
+
+$msg = empty($link->error) ? 'データベース初期化完了' : $link->error;
+
 disconnect();# 切断
-echo json_encode(['result' => 'データベース初期化完了']);# レスポンス
+
+echo json_encode(['result' => $msg]);# レスポンス
 ?>

@@ -2,7 +2,7 @@
 # 接続
 const HOST = 'localhost';# ホスト名
 const USER = 'root';# 接続ユーザー名
-const PASS = 'YourSecurePassword';# パスワード
+const PASS = '';# パスワード
 
 # globalで使うmysqliオブジェクト
 $link;
@@ -23,21 +23,23 @@ function disconnect() {
 }
 
 # SELECT文を実行して結果を取得
-function select($sql, $display = false) {
+function select($sql) {
 	global $link;
 	$result = $link->query($sql);
 	$rows = [];
 	while($row = $result->fetch_assoc()) $rows[] = $row;
 	$result->close();
-	if($display) echo "{$sql}\n";
 	return $rows;
 }
 
 # SELECT文以外を実行するだけ
-function execute($sql, $display = false) {
+function execute($sql) {
 	global $link;
 	$link->query($sql);
-	if($display) echo "{$sql}\n";
 	return !$link->error;
+}
+
+function sqlEscape($text) {
+	return str_replace("'", "''", $text);
 }
 ?>

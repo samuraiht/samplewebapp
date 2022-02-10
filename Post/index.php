@@ -2,13 +2,11 @@
 <html lang="ja">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="viewport" content="width=device-width">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>記事一覧</title>
 	<link rel="stylesheet" href="../app/css/reset.css">
 	<link rel="stylesheet" href="post.css">
-	<script src="../app/js/fetch.js"></script>
-	<script src="post.js"></script>
 </head>
 <body>
 	<h1>SimpleMVC async posts demo</h1>

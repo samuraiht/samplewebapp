@@ -5,12 +5,12 @@ if(empty($_GET['mode'])) exit;
 require_once '../app/db.php';
 require_once '../app/app.php';
 
-function echoJSON($arr) {
+function echoJSONArray($arr) {
 	echo json_encode($arr);
 }
 
 function echoJSON($key, $val) {
-	echoJSON([$key => $val]);
+	echoJSONArray([$key => $val]);
 }
 
 switch($_GET['mode']) {
@@ -65,20 +65,20 @@ switch($_GET['mode']) {
 				'icon' => !empty($p['src']) ? ['src' => $p['src'], 'alt' => $p['alt']] : NULL
 			];
 		}
-		echoJSON($res);
+		echoJSONArray($res);
 		break;
 
 	case 'store':
 # 接続 失敗時処理中断
 		if(!connect('post')) {
-			echoHTML($link->connect_error);
+			echoJSONArray($link->connect_error);
 			break;
 		}
 
 # INSERT
-		$title = !empty($_POST['title']) ? "'" . str_replace("'", "''", $_POST['title']) . "'" : 'NULL';
-		$content = !empty($_POST['content']) ? "'" . str_replace("'", "''", $_POST['content']) . "'" : 'NULL';
-		$icon = !empty((int)$_POST['icon']) ? (int)$_POST['icon']) : 'NULL';
+		$title = !empty($_POST['title']) ? "'" . sqlEscape($_POST['title']) . "'" : 'NULL';
+		$content = !empty($_POST['content']) ? "'" . sqlEscape($_POST['content']) . "'" : 'NULL';
+		$icon = !empty((int)$_POST['icon']) ? (int)$_POST['icon'] : 'NULL';
 		$sql = "INSERT INTO `posts` (`title`,`content`,`icon`) VALUES({$title},{$content},{$icon};";
 		execute($sql);
 
@@ -91,7 +91,7 @@ switch($_GET['mode']) {
 	case 'update':
 # 接続 失敗時処理中断
 		if(!connect('post')) {
-			echoHTML($link->connect_error);
+			echoJSONArray($link->connect_error);
 			break;
 		}
 
@@ -102,10 +102,11 @@ switch($_GET['mode']) {
 		}
 
 # UPDATE
-		$title = !empty($_POST['title']) ? "'" . str_replace("'", "''", $_POST['title']) . "'" : 'NULL';
-		$content = !empty($_POST['content']) ? "'" . str_replace("'", "''", $_POST['content']) . "'" : 'NULL';
-		$icon = !empty((int)$_POST['icon']) ? (int)$_POST['icon']) : 'NULL';
-		$sql = "UPDATE `posts` SET `title`={$title},`content`={$content},`icon`{$icon} WHERE `id`={(int)$_POST['id']};";
+		$id = (int)$_POST['id'];
+		$title = !empty($_POST['title']) ? "'" . sqlEscape($_POST['title']) . "'" : 'NULL';
+		$content = !empty($_POST['content']) ? "'" . sqlEscape($_POST['content']) . "'" : 'NULL';
+		$icon = !empty($_POST['icon']) ? (int)$_POST['icon'] : 'NULL';
+		$sql = "UPDATE `posts` SET `title`={$title},`content`={$content},`icon`={$icon} WHERE `id`={$id};";
 		execute($sql);
 
 # 実行したSQLの記録
@@ -117,7 +118,7 @@ switch($_GET['mode']) {
 	case 'delete':
 # 接続 失敗時処理中断
 		if(!connect('post')) {
-			echoHTML($link->connect_error);
+			echoJSONArray($link->connect_error);
 			break;
 		}
 
@@ -128,13 +129,42 @@ switch($_GET['mode']) {
 		}
 
 # DELETE
-		$sql = "DELETE FROM `posts` WHERE `id`={(int)$_POST['id']};";
+		$id = (int)$_POST['id'];
+		$sql = "DELETE FROM `posts` WHERE `id`={$id};";
 		execute($sql);
 
 # 実行したSQLの記録
 		sqllog($sql);
 
 		echoJSON('result', '削除完了');
+		break;
+
+	case 'img':
+# 接続 失敗時処理中断
+		if(!connect('post')) {
+			echoJSONArray($link->connect_error);
+			break;
+		}
+
+
+# パラメーターチェック
+		if(empty($_POST['org']) || empty($_POST['src'])) {
+			echoJSON('result', 'パラメーターが正しくありません。');
+			break;
+		}
+
+# INSERT
+		$org = sqlEscape($_POST['org']);
+		$src = sqlEscape($_POST['src']);
+		$alt = !empty($_POST['alt']) ? "'" . sqlEscape($_POST['alt']) . "'" : 'NULL';
+		connect('post');# 接続
+		$sql = "INSERT INTO `images` (`org`,`src`,`alt`) VALUES('{$org}','{$src}',{$alt});";
+		execute($sql);
+
+# 実行したSQLの記録
+		sqllog($sql);
+
+		echoJSON('result', '画像アップロード完了');
 }
 
 # 切断

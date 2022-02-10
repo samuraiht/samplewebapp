@@ -4,25 +4,27 @@ window.onload = () => {
 	const app = 'app.php',
 				result = document.getElementById('result'),
 				posts = document.getElementById('posts'),
+				src = document.getElementById('src'),
+				alt = document.getElementById('alt'),
 				btnExe = document.getElementById('buttonExe'),
 				inputs = [
 					{ data : 'data-id', elem : document.getElementById('id'), initValue : '' },
 					{ data : 'data-title', elem : document.getElementById('title'), initValue : '' },
-					{ data : 'data-content', elem : document.getElementById('content'), initValue : '0' },
-					{ data : 'data-icon', elem : document.getElementById('icon'), initValue : '0' }
+					{ data : 'data-content', elem : document.getElementById('content'), initValue : '' },
+					{ data : 'data-icon', elem : document.getElementById('icon'), initValue : '' }
 				];
 	let mode = 'store', oldValue;
 
 	function showResult(data) {
 		result.textContent = data.result;// メッセージ
-		posts.innerHTML = data.html;// HTMLのtable要素の内容
+//		posts.innerHTML = data.html;// HTMLのtable要素の内容
 		setButtonEvent();
 		init();
 	}
 
 	function init() {
 		mode = 'store';
-		btnExe.textContent = '登録';
+		btnExe.textContent = '投稿';
 		for(const i of inputs) i.elem.value = i.initValue;
 	}
 
@@ -67,6 +69,16 @@ window.onload = () => {
 	document.getElementById('store').onclick = () => {
 		result.textContent = '';
 		init();
+	};
+
+	document.getElementById('upload').onclick = () => {
+		if(!src.files.length) {
+			result.innerHTML = '画像を選択してください。';
+			return;
+		}
+		const reader = new FileReader();
+		reader.readAsDataURL(src.files[0]);
+		reader.onload = () => { fetchJSON(app, { mode : 'img' }, { org : src.files[0].name, src : reader.result, alt : alt.value }).then(data => { showResult(data); }); };
 	};
 
 	btnExe.onclick = e => {
